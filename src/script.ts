@@ -3,8 +3,6 @@ import { bootstrapCameraKit, createMediaStreamSource } from '@snap/camera-kit';
 const liveRenderTarget = document.getElementById('canvas') as HTMLCanvasElement;
 const videoContainer = document.getElementById('video-container') as HTMLElement;
 const videoTarget = document.getElementById('video') as HTMLVideoElement;
-const startRecordingButton = document.getElementById('start') as HTMLButtonElement;
-const stopRecordingButton = document.getElementById('stop') as HTMLButtonElement;
 const downloadButton = document.getElementById('download') as HTMLButtonElement;
 const recordBtn = document.getElementById('record-btn') as HTMLButtonElement;
 const recordIcon = document.getElementById('record-icon');
