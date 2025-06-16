@@ -1,4 +1,9 @@
-import { bootstrapCameraKit, createMediaStreamSource } from '@snap/camera-kit';
+import {
+  bootstrapCameraKit,
+  CameraKitSession,
+  createMediaStreamSource,
+  Transform2D,
+} from '@snap/camera-kit';
 
 const liveRenderTarget = document.getElementById('canvas') as HTMLCanvasElement;
 const videoContainer = document.getElementById('video-container') as HTMLElement;
@@ -6,10 +11,14 @@ const videoTarget = document.getElementById('video') as HTMLVideoElement;
 const downloadButton = document.getElementById('download') as HTMLButtonElement;
 const recordBtn = document.getElementById('record-btn') as HTMLButtonElement;
 const recordIcon = document.getElementById('record-icon');
+const flipCamera = document.getElementById('flip') as HTMLSpanElement;
 if (!(recordIcon instanceof SVGSVGElement)) {
   throw new Error('record-icon element is not an SVGSVGElement');
 }
 
+let isBackFacing = true;
+let mediaStream: MediaStream;
+let session: CameraKitSession;
 let mediaRecorder: MediaRecorder;
 let downloadUrl: string;
 let isRecording = false;
@@ -29,28 +38,69 @@ async function init() {
     apiToken: import.meta.env.VITE_API_TOKEN,
   });
 
-  const session = await cameraKit.createSession({ liveRenderTarget });
+  session = await cameraKit.createSession({ liveRenderTarget });
 
-  // Usa dimensiones recomendadas para la cámara
-  const mediaStream = await navigator.mediaDevices.getUserMedia({
+  // Carga un lens (puedes ajustar los IDs si lo necesitas)
+  const lens = await cameraKit.lensRepository.loadLens(
+    'ed7245a0-0928-4a49-aa00-0633f5a5356a',
+    '7e85b7b0-a5ee-4f2c-bf4b-6ad6768590ab'
+  );
+  await session.applyLens(lens);
+
+  bindFlipCamera(session);
+  await updateCamera(session);
+
+  bindRecorder();
+}
+
+function bindFlipCamera(session: CameraKitSession) {
+  flipCamera.style.cursor = 'pointer';
+  flipCamera.style.position = 'fixed';
+  flipCamera.style.top = '32px';
+  flipCamera.style.right = '32px';
+  flipCamera.style.zIndex = '1002';
+  flipCamera.style.background = '#fff';
+  flipCamera.style.padding = '8px 16px';
+  flipCamera.style.borderRadius = '20px';
+  flipCamera.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+  flipCamera.style.fontWeight = 'bold';
+
+  flipCamera.addEventListener('click', () => {
+    updateCamera(session);
+  });
+}
+
+async function updateCamera(session: CameraKitSession) {
+  isBackFacing = !isBackFacing;
+
+  flipCamera.innerText = isBackFacing
+    ? 'Switch to Front Camera'
+    : 'Switch to Back Camera';
+
+  if (mediaStream) {
+    session.pause();
+    mediaStream.getVideoTracks()[0].stop();
+  }
+
+  mediaStream = await navigator.mediaDevices.getUserMedia({
     video: {
+      facingMode: isBackFacing ? 'environment' : 'user',
       width: { ideal: 1280 },
       height: { ideal: 720 },
     },
   });
 
-  const source = createMediaStreamSource(mediaStream);
+  const source = createMediaStreamSource(mediaStream, {
+    cameraType: isBackFacing ? 'environment' : 'user',
+  });
 
   await session.setSource(source);
-  await session.play();
 
-  const lens = await cameraKit.lensRepository.loadLens(
-    'ed7245a0-0928-4a49-aa00-0633f5a5356a', 
-    '7e85b7b0-a5ee-4f2c-bf4b-6ad6768590ab'
-  );
-  await session.applyLens(lens);
+  if (!isBackFacing) {
+    source.setTransform(Transform2D.MirrorX);
+  }
 
-  bindRecorder();
+  session.play();
 }
 
 function bindRecorder() {
@@ -67,8 +117,8 @@ function bindRecorder() {
       videoContainer.style.display = 'none';
       downloadButton.disabled = true;
 
-      const mediaStream = liveRenderTarget.captureStream(30);
-      mediaRecorder = new MediaRecorder(mediaStream);
+      const stream = liveRenderTarget.captureStream(30);
+      mediaRecorder = new MediaRecorder(stream);
       mediaRecorder.addEventListener('dataavailable', (event) => {
         if (!event.data.size) {
           console.warn('No recorded data available');
