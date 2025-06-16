@@ -1,0 +1,314 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Avenir Next', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #E5E5E5;
+}
+
+/* Ensure full screen for canvas and video */
+html, body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+#canvas {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height: 100vh !important;
+  width: auto !important;
+  aspect-ratio: 16 / 9;
+  max-width: 100vw;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  background: #000;
+  display: block;
+  object-fit: cover;
+}
+#video-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#video {
+  width: auto;
+  height: 80vh;
+  aspect-ratio: 16 / 9;
+  max-width: 100vw;
+  background: #000;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+  object-fit: cover;
+}
+
+/* Modal Overlay */
+#modal-overlay,
+#terms-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999 !important; /* Muy arriba de todo */
+  background: rgba(0,0,0,0.48);
+}
+#sheet-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 10000;
+  background: rgba(0,0,0,0.48);
+}
+
+/* Dialog */
+.modal-dialog {
+  position: relative;
+  width: 311px;
+  height: 436px;
+  background: #FFF;
+  box-shadow: 0px 10px 20px rgba(0,0,0,0.3);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sheet-dialog {
+  width: 100vw;
+  max-width: 480px;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0px -2px 16px rgba(0,0,0,0.15);
+  margin-bottom: 0;
+  padding-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  animation: slideUpSheet 0.3s;
+}
+
+/* Close Button (optional) */
+.modal-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.04);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+}
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Content Layout */
+.modal-content {
+  width: 279px;
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Headline */
+.headline-intro {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: center;
+  color: #656D78;
+  margin: 0 0 8px 0;
+}
+.headline-title {
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 44px;
+  text-align: center;
+  color: #16191C;
+  margin: 0;
+}
+
+/* Snap Attribution Row */
+.snap-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+.snap-row .powered-by {
+  font-family: 'Graphik', 'Avenir Next', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+  letter-spacing: -0.25px;
+  text-align: right;
+  color: #000;
+}
+.snap-row .snap-logo {
+  width: 16px;
+  height: 16px;
+}
+
+/* Graphic */
+.modal-graphic {
+  box-sizing: border-box;
+  width: 199px;
+  height: 144px;
+  background: url('/Checker.png') center center/cover no-repeat;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+}
+
+/* Description */
+.modal-description {
+  width: 279px;
+  height: 44px;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 22px;
+  text-align: center;
+  color: #16191C;
+  margin-bottom: 12px;
+}
+
+/* Main Button */
+.modal-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0;
+  width: 190px;
+  height: 48px;
+  background: #0FADFF;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  color: #FFF;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 24px;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+.modal-button:hover {
+  background: #0391ce;
+}
+
+/* Record Button */
+.record-btn {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  z-index: 1001;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.record-btn:active {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+.recording #record-icon circle {
+  fill: #444;
+}
+.recording #record-icon rect {
+  display: block;
+}
+#record-icon rect {
+  display: none;
+}
+
+/* Sheet Modal Specific Styles */
+@keyframes slideUpSheet {
+  from { transform: translateY(100%);}
+  to { transform: translateY(0);}
+}
+
+.sheet-header {
+  padding: 24px 24px 0 24px;
+}
+
+.sheet-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #16191C;
+  margin-bottom: 4px;
+}
+
+.sheet-effective {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.sheet-body {
+  padding: 0 24px 16px 24px;
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.sheet-copy {
+  font-size: 15px;
+  color: #222;
+  line-height: 1.6;
+  max-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.sheet-gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 56px;
+  height: 32px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 90%);
+  pointer-events: none;
+}
+
+.sheet-button {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  padding: 12px 0;
+  background: #0FADFF;
+  color: #fff;
+  font-weight: 700;
+  font-size: 17px;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: block;
+}
+.sheet-button:hover {
+  background: #0391ce;
+}

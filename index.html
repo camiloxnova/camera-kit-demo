@@ -5,27 +5,81 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MY Camera Kit Web APP</title>
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      .container {
-        width: 100%;
-        max-width: 600px;
-        margin: auto;
-      }
-    </style>
+    <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <section>
-      <canvas id="canvas"></canvas>
-    </section>
-    <section>
-      <button id="start">Start Recording</button>
-      <button id="stop" disabled>Stop Recording</button>
-    </section>
+    <div id="modal-overlay">
+      <div class="modal-dialog">
+        <button class="modal-close" aria-label="Cerrar" style="display:none">
+          <!-- Opcional: icono SVG de X, si quieres botón de cierre -->
+          <svg viewBox="0 0 20 20"><line x1="4" y1="4" x2="16" y2="16" stroke="#333" stroke-width="2"/><line x1="16" y1="4" x2="4" y2="16" stroke="#333" stroke-width="2"/></svg>
+        </button>
+        <div class="modal-content">
+          <div>
+            <div class="headline-intro">introducing</div>
+            <h2 class="headline-title">Camera Lenses</h2>
+          </div>
+          <div class="snap-row">
+            <span class="powered-by">Powered by</span>
+            <img src="/snap-ghost.png" alt="Snap Logo" class="snap-logo" />
+          </div>
+          <div class="modal-graphic"></div>
+          <div class="modal-description">
+            Amazing effects that transform your reality and the world around you!
+          </div>
+          <button class="modal-button" id="got-it-btn">Got it</button>
+        </div>
+      </div>
+    </div>
+    <div id="terms-modal-overlay" style="display: none;">
+      <div class="modal-dialog">
+        <button class="modal-close" aria-label="Cerrar" style="display:none">
+          <svg viewBox="0 0 20 20"><line x1="4" y1="4" x2="16" y2="16" stroke="#333" stroke-width="2"/><line x1="16" y1="4" x2="4" y2="16" stroke="#333" stroke-width="2"/></svg>
+        </button>
+        <div class="modal-content">
+          <div>
+            <h2 class="headline-title" style="margin-bottom:10px;">Terms of Service</h2>
+          </div>
+          <div class="modal-description" style="height:auto;">
+            By using Lenses, you acknowledge reading Snap's 
+            <a href="https://snap.com/privacy/privacy-policy" target="_blank" style="color:#0FADFF;text-decoration:underline;">Privacy Policy</a> 
+            and agree to Snap's 
+            <a href="https://snap.com/terms" target="_blank" style="color:#0FADFF;text-decoration:underline;">Terms of Service</a>.<br>
+            Some Lenses use information about your face, hands, and voice to work.
+          </div>
+          <button class="modal-button" id="accept-terms-btn">I Agree</button>
+        </div>
+      </div>
+    </div>
+    <div id="sheet-modal-overlay" style="display: none;">
+      <div class="sheet-dialog">
+        <div class="sheet-header">
+          <div class="sheet-title">Snap Inc. Terms of Service</div>
+          <div class="sheet-effective">Effective September 30, 2021</div>
+        </div>
+        <div class="sheet-body">
+          <div class="sheet-copy">
+            <strong>Welcome!</strong><br/><br/>
+            We’ve drafted these Terms of Service (which we call the “Terms”) so you’ll know the rules that govern our relationship with you as a user of our Services. Although we have tried our best to strip the legalese from the Terms, there are places where they may still read like a traditional contract. There’s a good reason for that: these Terms form a legally binding contract between you and Snap Inc. (“Snap”). So please read them carefully.
+            <br/><br/>
+            By using Snapchat, Bitmoji, or any of our other products or services that are subject to these Terms (which we refer to collectively as the “Services”), you agree to the Terms. Of course, if you don’t agree with them, then don’t use the Services.
+            <br/><br/>
+            These Terms apply if you live in the United States or if your principal place of business is in the United States. If you live outside of the United States or if your principal place of business is outside of the United States, Snap Group Limited provides you the Services and your relationship is governed by the Snap Group Limited Terms of Service.
+            <br/><br/>
+            <strong>ARBITRATION NOTICE:</strong> THESE TERMS CONTAIN AN ARBITRATION CLAUSE A LITTLE LATER ON. EXCEPT FOR CERTAIN TYPES OF DISPUTES MENTIONED IN THAT ARBITRATION CLAUSE, YOU AND SNAP AGREE THAT DISPUTES BETWEEN US WILL BE RESOLVED BY MANDATORY BINDING ARBITRATION, AND YOU AND SNAP WAIVE ANY RIGHT TO PARTICIPATE IN A CLASS-ACTION LAWSUIT OR CLASS-WIDE.
+            <!-- ...puedes pegar el resto del texto legal aquí -->
+          </div>
+          <div class="sheet-gradient"></div>
+          <button class="sheet-button" id="done-terms-btn">Done</button>
+        </div>
+      </div>
+    </div>
+    <canvas id="canvas"></canvas>
+    <button id="record-btn" class="record-btn" aria-label="Start Recording">
+      <svg id="record-icon" width="48" height="48" viewBox="0 0 48 48">
+        <circle cx="24" cy="24" r="18" fill="red"/>
+      </svg>
+    </button>
     <section id="video-container" style="display: none">
       <video loop controls autoplay id="video"></video>
       <div>
