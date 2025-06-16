@@ -312,3 +312,17 @@ html, body {
 .sheet-button:hover {
   background: #0391ce;
 }
+
+/* Watermark */
+#watermark {
+  position: fixed;
+  left: 8px;
+  bottom: 8px;
+  z-index: 1001;
+  width: 135px;
+  height: 26px;
+  pointer-events: none;
+  opacity: 0.85;
+  /* Escalado para reducir tamaño */
+  /* Puedes ajustar width/height si la imagen se ve distorsionada */
+}
