@@ -2,8 +2,7 @@ import { bootstrapCameraKit } from "@snap/camera-kit";
 
 (async function () {
   const cameraKit = await bootstrapCameraKit({ 
-    apiToken: 
-      'eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.eyJhdWQiOiJjYW52YXMtY2FudmFzYXBpIiwiaXNzIjoiY2FudmFzLXMyc3Rva2VuIiwibmJmIjoxNzQ5MTM0MzE2LCJzdWIiOiJiMjg1M2UyMC1hODFmLTQ2ZDEtODRkMS1kMDBjNzQ3M2U4NGZ-U1RBR0lOR35lYmY3ZmU0ZC0zMWU1LTQxZjYtODZjNi04MTZiNTU2ZTQ4NzEifQ.z1wu7S3aC0dIAHNDT2Av60sxhA8i36Q7EeCwvP9Ar4g' 
+    apiToken: import.meta.env.VITE_API_TOKEN
   });
 
   const liveRenderTarget = document.getElementById('canvas') as HTMLCanvasElement;
