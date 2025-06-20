@@ -42,7 +42,7 @@ async function init() {
 
   // Carga un lens (puedes ajustar los IDs si lo necesitas)
   const lens = await cameraKit.lensRepository.loadLens(
-    'ed7245a0-0928-4a49-aa00-0633f5a5356a',
+    'cf6915e2-af58-4bfe-84e0-a1bc6ff5aac2', // Lens ID
     '7e85b7b0-a5ee-4f2c-bf4b-6ad6768590ab'
   );
   await session.applyLens(lens);
